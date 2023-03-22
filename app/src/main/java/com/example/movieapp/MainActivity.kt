@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
@@ -21,6 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import com.example.movieapp.models.Movie
 import com.example.movieapp.models.getMovies
 import androidx.compose.runtime.remember as remember
@@ -54,9 +57,10 @@ fun TopBarApp(){
 
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(color = Color.Blue)){
+        .background(color = MaterialTheme.colors.primary)
+        .padding(7.dp)){
         Column {
-            Text("Movies")
+            Text("Movies",color = Color.White)
 
         }
         Column(modifier = Modifier
@@ -73,18 +77,21 @@ fun TopBarApp(){
                             menu = !menu
                         })
                 )
-                DropdownMenu(
-                    expanded = menu,
-                    onDismissRequest = { menu = false },
-                    modifier = Modifier.background(Color.Blue)
-                ) {
-                    Row {
-                        Icon(
-                            imageVector = (Icons.Default.Favorite),
-                            contentDescription = "Favoriten"
-                        )
+                    DropdownMenu(
+                        expanded = menu,
+                        onDismissRequest = { menu = false },
+                        modifier = Modifier
+                            .background(color = MaterialTheme.colors.primary)
+                            .padding(7.dp)
+                    ) {
+                        Row {
+                            Text("Favorites ", color = Color.White)
+                            Icon(
+                                imageVector = (Icons.Default.Favorite),
+                                contentDescription = "Favoriten"
+                            )
+                        }
                     }
-                }
             }
         }
     }
@@ -98,53 +105,62 @@ fun MovieRow(movie: Movie){
         mutableStateOf(false)
     }
 
-    Column {
-        Box {
-            AsyncImage(
-                model = movie.images[0],
-                contentDescription = null
-            )
+    Card(shape = RoundedCornerShape(8.dp), modifier = Modifier
+        .fillMaxWidth()
+        .padding(5.dp)) {
+        Column {
             Box(modifier = Modifier
-                .fillMaxSize(),
-                contentAlignment = Alignment.TopEnd
-            ){
-                Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "favourite")
-            }
-        }
-        Row {
-            Column {
-                Text(movie.title)
-            }
-            Column(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalAlignment = Alignment.End)
-            {
-                image = if (expand) {
-                    Icons.Default.KeyboardArrowUp
-                } else {
-                    Icons.Default.KeyboardArrowDown
-                }
-
-                Icon(imageVector = image, contentDescription = "dropdown",
-                    modifier = Modifier
-                        .clickable(onClick = {
-                            expand = !expand
-                        })
+                .fillMaxWidth()
+                .height(250.dp)) {
+                AsyncImage(
+                    model = movie.images[0],
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxWidth()
                 )
-
+                Box(modifier = Modifier
+                    .fillMaxSize(),
+                    contentAlignment = Alignment.TopEnd
+                ){
+                    Icon(imageVector = Icons.Default.FavoriteBorder, tint = Color.White, contentDescription = "favourite", modifier = Modifier
+                        .padding(7.dp))
                 }
             }
-
-        Row {
-            AnimatedVisibility(visible = expand) {
+            Row(Modifier.background(color = MaterialTheme.colors.secondary)) {
                 Column {
+                    Text(movie.title)
+                }
+                Column(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalAlignment = Alignment.End)
+                {
+                    image = if (expand) {
+                        Icons.Default.KeyboardArrowUp
+                    } else {
+                        Icons.Default.KeyboardArrowDown
+                    }
 
-                    Text("Director: " + movie.director)
-                    Text("Release Year: " + movie.year)
-                    Text("Genre: " + movie.genre)
-                    Text("Actors: " + movie.actors)
-                    Text("Plot: " + movie.plot)
-                    Text("Rating: " + movie.rating)
+                    Icon(imageVector = image, contentDescription = "dropdown",
+                        modifier = Modifier
+                            .clickable(onClick = {
+                                expand = !expand
+                            })
+                    )
+
+                    }
+                }
+
+            Row {
+                AnimatedVisibility(visible = expand) {
+                    Column {
+
+                        Text("Director: " + movie.director)
+                        Text("Release Year: " + movie.year)
+                        Text("Genre: " + movie.genre)
+                        Text("Actors: " + movie.actors)
+                        Text("Plot: " + movie.plot)
+                        Text("Rating: " + movie.rating)
+                    }
                 }
             }
         }
