@@ -14,14 +14,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.movieappmad23.R
 import com.example.movieappmad23.models.Genre
 import com.example.movieappmad23.models.ListItemSelectable
+import com.example.movieappmad23.models.MovieViewModel
 import com.example.movieappmad23.widgets.SimpleTopAppBar
 
 @Composable
-fun AddMovieScreen(navController: NavController){
+fun AddMovieScreen(navController: NavController,
+                   movieViewModel: MovieViewModel){
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
@@ -32,13 +35,12 @@ fun AddMovieScreen(navController: NavController){
             }
         },
     ) { padding ->
-        MainContent(Modifier.padding(padding))
+        MainContent(Modifier.padding(padding),movieViewModel)
     }
 }
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
+fun MainContent(modifier: Modifier = Modifier, movieViewModel: MovieViewModel) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -52,6 +54,8 @@ fun MainContent(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.Start
         ) {
+
+            var floatRating: Float
 
             var title by remember {
                 mutableStateOf("")
@@ -91,7 +95,7 @@ fun MainContent(modifier: Modifier = Modifier) {
             }
 
             var isEnabledSaveButton by remember {
-                mutableStateOf(true)
+                mutableStateOf(false)
             }
 
             OutlinedTextField(
@@ -100,8 +104,12 @@ fun MainContent(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { title = it },
                 label = { Text(text = stringResource(R.string.enter_movie_title)) },
-                isError = false
+                isError = !movieViewModel.validation(title)
             )
+
+            if(!movieViewModel.validation(title)){
+                Text("Please enter a valid title!")
+            }
 
             OutlinedTextField(
                 value = year,
@@ -109,8 +117,12 @@ fun MainContent(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { year = it },
                 label = { Text(stringResource(R.string.enter_movie_year)) },
-                isError = false
+                isError = !movieViewModel.validation(year)
             )
+
+            if(!movieViewModel.validation(year)){
+                Text("Please enter a valid year!")
+            }
 
             Text(
                 modifier = Modifier.padding(top = 4.dp),
@@ -145,23 +157,34 @@ fun MainContent(modifier: Modifier = Modifier) {
                 }
             }
 
+            if(!movieViewModel.validation(genreItems)){
+                Text("Please select at least one Genre!")
+            }
+
             OutlinedTextField(
                 value = director,
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { director = it },
                 label = { Text(stringResource(R.string.enter_director)) },
-                isError = false
+                isError = !movieViewModel.validation(director)
             )
+
+            if(!movieViewModel.validation(director)){
+                Text("Please enter a valid director!")
+            }
 
             OutlinedTextField(
                 value = actors,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { actors = it },
                 label = { Text(stringResource(R.string.enter_actors)) },
-                isError = false
+                isError = !movieViewModel.validation(actors)
             )
 
+            if(!movieViewModel.validation(actors)){
+                Text("Please enter a valid title!")
+            }
             OutlinedTextField(
                 value = plot,
                 singleLine = true,
@@ -178,19 +201,32 @@ fun MainContent(modifier: Modifier = Modifier) {
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
-                                rating = if(it.startsWith("0")) {
-                                    ""
-                                } else {
-                                    it
-                                }
+                    rating = if (it.startsWith("0")) {
+                        ""
+                    } else {
+                        it
+                    }
                 },
                 label = { Text(stringResource(R.string.enter_rating)) },
-                isError = false
+                isError = !movieViewModel.validation(rating)
             )
+
+            if(rating.matches("-?\\d+(\\.\\d+)?".toRegex())){
+                    floatRating = rating.toFloat()
+                }
+            else{
+                floatRating = -1f
+            }
+
+            if(!movieViewModel.validation(floatRating)){
+                Text("Please enter a valid rating!")
+            }
+
+            isEnabledSaveButton = movieViewModel.validation(title) && movieViewModel.validation(year) && movieViewModel.validation(genreItems) && movieViewModel.validation(director) && movieViewModel.validation(actors) && movieViewModel.validation(floatRating)
 
             Button(
                 enabled = isEnabledSaveButton,
-                onClick = { /*TODO add a new movie to the movie list*/ }) {
+                onClick = { movieViewModel.addMovie(title,year,genreItems,director,actors,plot,floatRating) }) {
                 Text(text = stringResource(R.string.add))
             }
         }

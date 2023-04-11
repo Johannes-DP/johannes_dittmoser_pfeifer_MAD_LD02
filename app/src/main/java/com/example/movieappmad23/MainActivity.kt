@@ -1,6 +1,7 @@
 package com.example.movieappmad23
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.movieappmad23.navigation.Navigation
@@ -15,5 +16,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("MainActivity","onStart called.")
+    }
 }
+
 
