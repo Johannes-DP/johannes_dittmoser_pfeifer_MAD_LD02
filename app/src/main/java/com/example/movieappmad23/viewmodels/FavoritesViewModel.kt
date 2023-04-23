@@ -8,14 +8,15 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 // inherit from ViewModel class
-class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
-    private val _movieListState = MutableStateFlow(listOf<Movie>())
-    val movieListState: StateFlow<List<Movie>> = _movieListState.asStateFlow()
+class FavoritesViewModel(private val repository: MovieRepository): ViewModel() {
+    private val _favoriteListState = MutableStateFlow(listOf<Movie>())
+    val favoriteMovieState: StateFlow<List<Movie>> = _favoriteListState.asStateFlow()
+
     init {
         viewModelScope.launch {
-            repository.getAllMovies().collect { movieList  ->
+            repository.getAllFavorites().collect { movieList  ->
                 if(!movieList.isNullOrEmpty()) {
-                    _movieListState.value = movieList
+                    _favoriteListState.value = movieList
                 }
             }
         }

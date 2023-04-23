@@ -8,9 +8,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 // inherit from ViewModel class
-class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
+class DetailViewModel(private val repository: MovieRepository): ViewModel() {
     private val _movieListState = MutableStateFlow(listOf<Movie>())
-    val movieListState: StateFlow<List<Movie>> = _movieListState.asStateFlow()
     init {
         viewModelScope.launch {
             repository.getAllMovies().collect { movieList  ->
@@ -24,6 +23,10 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
     suspend fun updateFavoriteMovies(movie: Movie){
         movie.isFavorite = !movie.isFavorite
         repository.update(movie)
+    }
+
+    suspend fun getMovieById(id: String): Movie{
+        return repository.getMovieById(id)
     }
 
     suspend fun deleteMovie(movie: Movie){
