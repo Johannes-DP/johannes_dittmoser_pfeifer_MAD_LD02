@@ -41,12 +41,6 @@ fun DetailScreen(
                     coroutineScope.launch {
                         detailViewModel.updateFavoriteMovies(movie)
                     }
-                },
-                onTrashClick = { movie ->
-                    coroutineScope.launch {
-                        detailViewModel.deleteMovie(movie)
-                        navController.navigate(Screen.MainScreen.route)
-                    }
                 }
             )
         }
@@ -57,8 +51,7 @@ fun DetailScreen(
 fun MainContent(
     modifier: Modifier = Modifier,
     movie: Movie,
-    onFavClick: (Movie) -> Unit,
-    onTrashClick: (Movie) -> Unit
+    onFavClick: (Movie) -> Unit
 ) {
     Surface(
         modifier = modifier
@@ -75,9 +68,6 @@ fun MainContent(
                 movie = movie,
                 onFavClick = { movie ->
                     onFavClick(movie)
-                },
-                onTrashClick = { movie ->
-                    onTrashClick(movie)
                 }
             )
 

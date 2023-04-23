@@ -14,9 +14,7 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
     init {
         viewModelScope.launch {
             repository.getAllMovies().collect { movieList  ->
-                if(!movieList.isNullOrEmpty()) {
                     _movieListState.value = movieList
-                }
             }
         }
     }

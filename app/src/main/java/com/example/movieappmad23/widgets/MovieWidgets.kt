@@ -40,8 +40,7 @@ fun MovieRow(
     movie: Movie = getMovies()[0],
     modifier: Modifier = Modifier,
     onMovieRowClick: (String) -> Unit = {},
-    onFavClick: (Movie) -> Unit = {},
-    onTrashClick: (Movie) -> Unit = {}
+    onFavClick: (Movie) -> Unit = {}
 ) {
     Card(modifier = modifier
         .clickable {
@@ -64,7 +63,6 @@ fun MovieRow(
                     Image(painter = painterResource(id = R.drawable.no_image_placeholder), contentDescription = "Prev Image")
                 }
                 FavoriteIcon(movie, onFavClick)
-                TrashIcon(movie, onTrashClick)
             }
 
             MovieDetails(modifier = Modifier.padding(12.dp), movie = movie)

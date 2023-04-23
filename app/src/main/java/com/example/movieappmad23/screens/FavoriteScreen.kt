@@ -38,12 +38,6 @@ fun FavoriteScreen(navController: NavController, favoritesViewModel: FavoritesVi
                             coroutineScope.launch{
                                 favoritesViewModel.updateFavoriteMovies(movie)
                             }
-                        },
-                        onTrashClick = { movie ->
-                            coroutineScope.launch {
-                                favoritesViewModel.deleteMovie(movie)
-                                navController.navigate(Screen.MainScreen.route)
-                            }
                         }
                     )
                 }

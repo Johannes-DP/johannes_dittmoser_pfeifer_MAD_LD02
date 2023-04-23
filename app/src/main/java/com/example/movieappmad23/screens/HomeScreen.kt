@@ -1,13 +1,12 @@
 package com.example.movieappmad23.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
@@ -88,6 +87,16 @@ fun MovieList(
     ) {
 
         items(items = movieListState) { movieItem ->
+            Row{
+                Text("Delete ${movieItem.title}: ")
+                Icon(
+                    tint = MaterialTheme.colors.secondary,
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Delete",
+                    modifier = Modifier.clickable(onClick = {coroutineScope.launch {viewModel.deleteMovie(movieItem)} })
+                )
+            }
+
             MovieRow(
                 movie = movieItem,
                 onMovieRowClick = { movieId ->
@@ -96,12 +105,6 @@ fun MovieList(
                 onFavClick  = { movie ->
                     coroutineScope.launch {
                         viewModel.updateFavoriteMovies(movie)
-                    }
-
-                },
-                onTrashClick = { movie ->
-                    coroutineScope.launch {
-                        viewModel.deleteMovie(movie)
                     }
                 }
             )

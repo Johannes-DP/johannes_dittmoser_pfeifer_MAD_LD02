@@ -13,9 +13,7 @@ class DetailViewModel(private val repository: MovieRepository): ViewModel() {
     init {
         viewModelScope.launch {
             repository.getAllMovies().collect { movieList  ->
-                if(!movieList.isNullOrEmpty()) {
                     _movieListState.value = movieList
-                }
             }
         }
     }
@@ -27,9 +25,5 @@ class DetailViewModel(private val repository: MovieRepository): ViewModel() {
 
     suspend fun getMovieById(id: String): Movie{
         return repository.getMovieById(id)
-    }
-
-    suspend fun deleteMovie(movie: Movie){
-        repository.delete(movie)
     }
 }
