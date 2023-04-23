@@ -3,9 +3,13 @@ package com.example.movieappmad23.models
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.*
 
+@Entity
 class Movie(
+    @PrimaryKey(autoGenerate = true)
     val id: String = UUID.randomUUID().toString(),
     val title: String = "",
     val year: String = "",
